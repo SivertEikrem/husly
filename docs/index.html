@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="nb">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f2f3f5">
+  <title>Husly – kollektivet samlet på ett sted</title>
+  <meta name="description" content="Beskjeder, felles utgifter, kalender, vaskeliste og handleliste for dere som bor i kollektiv. Gratis og uten reklame.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="common.js"></script>
+</head>
+<body>
+  <header class="site-head">
+    <a class="brand" href="./" id="brand"></a>
+    <nav id="head-nav"></nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div>
+        <h1>Kollektivet, samlet på ett sted.</h1>
+        <p class="lead">Beskjeder, felles utgifter, kalender, vaskeliste og handleliste for dere som bor sammen. Alle ser det samme, og ingen må lete i gruppechatten.</p>
+        <ul class="hero-points" id="hero-points"></ul>
+      </div>
+
+      <div class="auth-card" id="auth">
+        <div id="invite-note" class="form-ok" style="margin-bottom:16px" hidden></div>
+
+        <div class="seg" role="group" aria-label="Velg innlogging eller ny konto" id="auth-tabs">
+          <button type="button" data-mode="login" aria-pressed="true">Logg inn</button>
+          <button type="button" data-mode="signup" aria-pressed="false">Ny konto</button>
+        </div>
+
+        <form id="form-login" novalidate>
+          <div class="field">
+            <label class="label" for="li-email">E-post</label>
+            <input class="input" id="li-email" type="email" autocomplete="email" inputmode="email" required>
+          </div>
+          <div class="field">
+            <label class="label" for="li-pass">Passord</label>
+            <input class="input" id="li-pass" type="password" autocomplete="current-password" required>
+          </div>
+          <div class="form-error" data-error hidden style="margin-top:14px"></div>
+          <button class="btn btn-block" type="submit">Logg inn</button>
+          <p class="auth-alt"><button type="button" class="link-btn" data-goto="reset">Glemt passordet?</button></p>
+        </form>
+
+        <form id="form-signup" novalidate hidden>
+          <div class="field">
+            <label class="label" for="su-name">Navn</label>
+            <input class="input" id="su-name" autocomplete="given-name" maxlength="40" required placeholder="Det husfellene kaller deg">
+          </div>
+          <div class="field">
+            <label class="label" for="su-email">E-post</label>
+            <input class="input" id="su-email" type="email" autocomplete="email" inputmode="email" required>
+          </div>
+          <div class="field">
+            <label class="label" for="su-pass">Passord</label>
+            <input class="input" id="su-pass" type="password" autocomplete="new-password" minlength="8" required>
+            <span class="hint">Minst 8 tegn.</span>
+          </div>
+          <div class="form-error" data-error hidden style="margin-top:14px"></div>
+          <button class="btn btn-block" type="submit">Opprett konto</button>
+          <p class="auth-alt hint">Ved å opprette konto godtar du <a href="personvern.html">personvernerklæringen</a>.</p>
+        </form>
+
+        <form id="form-reset" novalidate hidden>
+          <h2>Nytt passord</h2>
+          <p class="sub">Skriv inn e-postadressen din, så sender vi deg en lenke for å lage et nytt passord.</p>
+          <div class="field">
+            <label class="label" for="rs-email">E-post</label>
+            <input class="input" id="rs-email" type="email" autocomplete="email" inputmode="email" required>
+          </div>
+          <div class="form-error" data-error hidden style="margin-top:14px"></div>
+          <button class="btn btn-block" type="submit">Send lenke</button>
+          <p class="auth-alt"><button type="button" class="link-btn" data-goto="login">Tilbake til innlogging</button></p>
+        </form>
+
+        <div id="sent" hidden>
+          <h2 id="sent-title">Sjekk e-posten din</h2>
+          <p class="sub" id="sent-text" style="margin-top:8px"></p>
+          <button type="button" class="btn btn-secondary btn-block" data-goto="login">Tilbake til innlogging</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="showcase">
+      <div class="showcase-inner">
+        <div class="grid-2" style="gap:40px; align-items:center">
+          <div>
+            <h2>Det et kollektiv faktisk trenger, og ikke noe mer.</h2>
+            <div class="features" id="features" style="grid-template-columns:1fr 1fr"></div>
+          </div>
+          <div class="demo hero-demo" aria-hidden="true">
+            <div class="slip">
+              <div class="slip-top"><span class="slip-week">Uke 44</span></div>
+              <div class="slip-title">Din tur denne uka</div>
+              <ul class="slip-list">
+                <li class="slip-item"><span class="check-btn" aria-pressed="false"></span><span class="slip-name">Kjøkken</span><span class="slip-meta">Neste: Ingrid</span></li>
+                <li class="slip-item done"><span class="check-btn" aria-pressed="true" id="demo-check"></span><span class="slip-name">Søppel ut</span><span class="slip-meta">Gjort i går</span></li>
+              </ul>
+            </div>
+            <div class="card">
+              <div class="card-head"><span class="card-title">Saldo</span></div>
+              <div class="balance-big amount pos">+340 kr</div>
+              <p class="balance-caption">Du får igjen fra Markus og Ingrid.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-foot">
+    <span>Husly er gratis og uten reklame.</span>
+    <a href="personvern.html">Personvern</a>
+  </footer>
+
+  <script>
+    qs('#brand').innerHTML = brandMark() + '<span>Husly</span>';
+    qs('#head-nav').innerHTML = themeToggle();
+    qs('#demo-check').innerHTML = icon('check');
+
+    qs('#hero-points').innerHTML = [
+      ['message', 'Beskjeder som ikke drukner'],
+      ['money', 'Felles utgifter og hvem som skylder hvem'],
+      ['sparkle', 'Vaskeliste som roterer av seg selv']
+    ].map(([i, t]) => `<li>${icon(i)}<span>${t}</span></li>`).join('');
+
+    qs('#features').innerHTML = [
+      ['message', 'Beskjeder', 'Én tavle for alt huset må vite. Fest det viktigste øverst.'],
+      ['money', 'Utgifter', 'Del handleturen, se saldoen og gjør opp med færrest mulig overføringer.'],
+      ['calendar', 'Kalender', 'Fellesmiddag, besøk og husmøte, med hvem som blir med.'],
+      ['sparkle', 'Vaskeliste', 'Oppgavene går på rundgang uke for uke. Alle ser hvem som har gjort sitt.'],
+      ['cart', 'Handleliste', 'Oppdateres med en gang for alle, også når du står i butikken.'],
+      ['house', 'Huset', 'Wifi, søppeltømming, husregler og kontakt med utleier.']
+    ].map(([i, t, d]) => `<div class="feature">${icon(i)}<h3>${t}</h3><p>${d}</p></div>`).join('');
+
+    const params = new URLSearchParams(location.search);
+    const inviteCode = normalizeCode(params.get('kode'));
+    if (inviteCode) {
+      try { localStorage.setItem('husly-kode', inviteCode); } catch (e) {}
+      const note = qs('#invite-note');
+      note.textContent = 'Du er invitert til et kollektiv. Logg inn eller lag en konto for å bli med.';
+      note.hidden = false;
+    }
+
+    function goApp() {
+      location.replace('app.html' + (inviteCode ? `?kode=${inviteCode}` : ''));
+    }
+
+    sb.auth.getSession().then(({ data }) => { if (data.session) goApp(); });
+
+    const forms = { login: qs('#form-login'), signup: qs('#form-signup'), reset: qs('#form-reset') };
+
+    function setMode(mode) {
+      Object.entries(forms).forEach(([k, f]) => { f.hidden = k !== mode; qs('[data-error]', f).hidden = true; });
+      qs('#sent').hidden = true;
+      qs('#auth-tabs').hidden = mode === 'reset';
+      qsa('#auth-tabs button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.mode === mode)));
+      const first = forms[mode].querySelector('input');
+      if (first && window.innerWidth > 900) first.focus();
+    }
+
+    function showSent(title, text) {
+      Object.values(forms).forEach((f) => { f.hidden = true; });
+      qs('#auth-tabs').hidden = true;
+      qs('#sent-title').textContent = title;
+      qs('#sent-text').textContent = text;
+      qs('#sent').hidden = false;
+    }
+
+    function showError(form, msg) {
+      const box = qs('[data-error]', form);
+      box.textContent = msg;
+      box.hidden = false;
+    }
+
+    qs('#auth-tabs').addEventListener('click', (e) => {
+      const b = e.target.closest('[data-mode]');
+      if (b) setMode(b.dataset.mode);
+    });
+    document.addEventListener('click', (e) => {
+      const g = e.target.closest('[data-goto]');
+      if (g) setMode(g.dataset.goto);
+    });
+
+    forms.login.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = qs('#li-email').value.trim();
+      const password = qs('#li-pass').value;
+      if (!validEmail(email) || !password) return showError(forms.login, 'Fyll inn e-post og passord.');
+      await withBusy(e.submitter, async () => {
+        const { error } = await sb.auth.signInWithPassword({ email, password });
+        if (error) return showError(forms.login, errMsg(error));
+        goApp();
+      });
+    });
+
+    forms.signup.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = qs('#su-name').value.trim();
+      const email = qs('#su-email').value.trim();
+      const password = qs('#su-pass').value;
+      if (!name) return showError(forms.signup, 'Skriv inn navnet ditt.');
+      if (!validEmail(email)) return showError(forms.signup, 'E-postadressen ser ikke riktig ut.');
+      if (password.length < 8) return showError(forms.signup, 'Passordet må ha minst 8 tegn.');
+      await withBusy(e.submitter, async () => {
+        const { data, error } = await sb.auth.signUp({
+          email, password,
+          options: { data: { display_name: name }, emailRedirectTo: pageUrl('auth.html') }
+        });
+        if (error) return showError(forms.signup, errMsg(error));
+        if (data.session) return goApp();
+        showSent('Bekreft e-posten din', `Vi har sendt en lenke til ${email}. Trykk på den for å aktivere kontoen.`);
+      });
+    });
+
+    forms.reset.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = qs('#rs-email').value.trim();
+      if (!validEmail(email)) return showError(forms.reset, 'E-postadressen ser ikke riktig ut.');
+      await withBusy(e.submitter, async () => {
+        const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: pageUrl('auth.html') });
+        if (error) return showError(forms.reset, errMsg(error));
+        showSent('Sjekk e-posten din', `Hvis det finnes en konto for ${email}, har vi sendt en lenke for å lage nytt passord.`);
+      });
+    });
+  </script>
+</body>
+</html>

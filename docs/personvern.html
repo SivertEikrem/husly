@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="nb">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f2f3f5">
+  <title>Personvern – Husly</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="common.js"></script>
+</head>
+<body>
+  <header class="site-head">
+    <a class="brand" href="./" id="brand"></a>
+    <nav id="head-nav"></nav>
+  </header>
+
+  <main class="prose">
+    <h1>Personvern</h1>
+    <p>Husly er et lite, privat drevet verktøy for folk som bor sammen. Her står det hva vi lagrer, hvem som ser det, og hvordan du sletter det.</p>
+
+    <h2>Hva vi lagrer</h2>
+    <ul>
+      <li>E-postadressen og passordet ditt (passordet lagres kryptert og kan ikke leses av noen).</li>
+      <li>Navnet du velger, profilfargen din og eventuelt telefonnummeret ditt.</li>
+      <li>Det du og husfellene dine legger inn: beskjeder, utgifter og betalinger, hendelser, vaskeliste, handleliste og informasjon om huset.</li>
+    </ul>
+
+    <h2>Hvem som ser det</h2>
+    <p>Alt du legger inn i et kollektiv, er bare synlig for medlemmene av det kollektivet. Dette håndheves i databasen, ikke bare på nettsiden. Telefonnummeret ditt er synlig for husfellene dine, slik at de kan betale deg tilbake.</p>
+    <p>Vi selger ikke data, viser ikke reklame og bruker ingen sporingsverktøy. Nettleseren husker bare innloggingen din og om du har valgt lys eller mørk modus.</p>
+
+    <h2>Hvor dataene ligger</h2>
+    <p>Dataene lagres hos Supabase, som drifter databasen og innloggingen. Nettsiden ligger på GitHub Pages. Skriften lastes fra Google Fonts.</p>
+
+    <h2>Slette kontoen</h2>
+    <p>Du kan slette kontoen din selv under <strong>Meg → Slett konto</strong>. Da slettes profilen din og alt du har lagt inn, også utgifter du har betalt og din del av felles utgifter. Gjør derfor opp med husfellene først. Hvis du er den siste i et kollektiv, slettes hele kollektivet.</p>
+
+    <h2>Kontakt</h2>
+    <p>Spørsmål om personvern eller ønske om innsyn: <a id="contact" href="#"></a></p>
+  </main>
+
+  <footer class="site-foot">
+    <a href="./">Til forsiden</a>
+    <span>Husly</span>
+  </footer>
+
+  <script>
+    qs('#brand').innerHTML = brandMark() + '<span>Husly</span>';
+    qs('#head-nav').innerHTML = themeToggle();
+    const mail = CONFIG.contactEmail || '';
+    const a = qs('#contact');
+    a.textContent = mail;
+    a.href = 'mailto:' + mail;
+  </script>
+</body>
+</html>
