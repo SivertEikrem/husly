@@ -6,7 +6,7 @@
 // =====================================================================
 
 window.HUSLY_CONFIG = {
-  supabaseUrl: 'https://DITT-PROSJEKT.supabase.co',
-  supabaseAnonKey: 'LIM-INN-ANON-NØKKELEN-HER',
+  supabaseUrl: 'https://hhqzrxxjivrpcamtkutz.supabase.co',
+  supabaseAnonKey: 'sb_publishable_aKgvrlwl8Ny9OIguVEHbOA_tldZXO0t',
   contactEmail: 'trevis.eikrem@gmail.com'
 };
